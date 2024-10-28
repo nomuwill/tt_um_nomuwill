@@ -10,7 +10,7 @@ module lif (
     // Define outputs
     output reg [7:0]    state,
     output wire         spike,
-)
+);
 
     // Internal components
     wire [7:0] next_state;
