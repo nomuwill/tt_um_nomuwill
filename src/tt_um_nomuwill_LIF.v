@@ -21,7 +21,7 @@ module tt_um_lif (
   assign uio_oe  = 1;
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  wire _unused = &{ena, uio_in, 1'b0};
 
   // Instantiate the LIF module
   lif lif_1 (
