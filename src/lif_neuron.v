@@ -9,12 +9,12 @@ module lif (
 
     // Define outputs
     output reg [7:0]    state,
-    output wire         spike,
+    output wire         spike
 );
 
     // Internal components
     wire [7:0] next_state;
-    reg [7:10] threshold;
+    reg [7:0] threshold;
 
     // Flipflop
     always @(posedge clk) begin
@@ -23,7 +23,6 @@ module lif (
         if (!reset_n) begin
             state <= 0;
             threshold <= 200;
-            beta <= 10;
         // Otherwise, update the state
         end else begin
             state <= next_state;
@@ -32,7 +31,7 @@ module lif (
 
     // Next state logic
         // Shifting to right is the same as dividing by 2
-    assign next_state = (current + (spike ? 0 : (state >> 1));
+    assign next_state = current + (spike ? 0 : (state >> 1));
 
     // Spiking logic
     assign spike = (state > threshold);
