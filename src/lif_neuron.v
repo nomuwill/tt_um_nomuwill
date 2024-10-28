@@ -23,6 +23,7 @@ module lif (
         if (!reset_n) begin
             state <= 0;
             threshold <= 200;
+            
         // Otherwise, update the state
         end else begin
             state <= next_state;
@@ -34,7 +35,7 @@ module lif (
     assign next_state = current + (spike ? 0 : (state >> 1));
 
     // Spiking logic
-    assign spike = (state > threshold);
+    assign spike = (state >= threshold);
 
 
 endmodule
