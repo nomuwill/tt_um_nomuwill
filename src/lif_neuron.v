@@ -16,26 +16,26 @@ module lif (
     wire [7:0] next_state;
     reg [7:0] threshold;
 
-    // Flipflop
-    always @(posedge clk) begin
+    // // Flipflop
+    // always @(posedge clk) begin
 
-        // If reset_n is low, reset the state and threshold
-        if (!reset_n) begin
-            state <= 0;
-            threshold <= 200;
-            
-        // Otherwise, update the state
-        end else begin
-            state <= next_state;
-        end
-    end
+    //     // If reset_n is low, reset the state and threshold
+    //     if (!reset_n) begin
+    //         state <= 0;
+    //         threshold <= 200;
 
-    // Next state logic
-        // Shifting to right is the same as dividing by 2
-    assign next_state = current + (spike ? 0 : (state >> 1));
+    //     // Otherwise, update the state
+    //     end else begin
+    //         state <= next_state;
+    //     end
+    // end
 
-    // Spiking logic
-    assign spike = (state >= threshold);
+    // // Next state logic
+    //     // Shifting to right is the same as dividing by 2
+    // assign next_state = current + (spike ? 0 : (state >> 1));
+
+    // // Spiking logic
+    // assign spike = (state >= threshold);
 
 
 endmodule
