@@ -24,11 +24,11 @@ module tt_um_nomuwill (
   wire _unused = &{ena, uio_in, 1'b0};
 
   // Internal signal
-  wire [15:0] v;  // State output
+  wire [7:0] v;  // State output
 
   // Instantiate the LIF module
   izh izh_1(
-    .current(ui_in),  // current input from parent module, concatenated to 16 bits
+    .current({8'b0, ui_in}),  // current input from parent module, concatenated to 16 bits
     .clk(clk),        // clock driven by clock in parent module
     .reset_n(rst_n),  // reset driven by reset in parent module
     .spike(uio_out[7]),    // most significant bit of state output to parent module
