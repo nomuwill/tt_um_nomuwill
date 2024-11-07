@@ -35,6 +35,6 @@ module tt_um_nomuwill (
     .v(v)   // Use lower 8 bits of v for state output
   );
 
-  assign uo_out = v[7:0];  // Assign lower 8 bits of v to output
+  assign uo_out = v;  // Assign lower 8 bits of v to output
 
 endmodule

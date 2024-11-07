@@ -36,13 +36,13 @@ Izhikevich model
 module izh (
 
     // Inputs
-    input wire [15:0] current,    // Input current (16-bit)
+    input wire [7:0] current,    // Input current (16-bit)
     input wire clk,
     input wire reset_n,
 
     // Outputs
     output wire spike,         // Spike output (1-bit)
-    output reg [15:0] v       // State output
+    output reg [7:0] v       // State output
 );
 
     // Internal Components     
@@ -64,12 +64,12 @@ module izh (
 
         // If reset cycle, reset state
         if (!reset_n) begin
-            v <= 16'b000000000_0000000;
+            v <= 8'b00000000;
             u <= 16'b000000000_0000000;
 
         // If not a reset cycle, update state
         end else begin
-            v <= v_next;
+            v <= v_next[7:0];;
             u <= u_next;   
         end
     end
@@ -84,12 +84,12 @@ module izh (
             v_next = c;            // Spike condition
             u_next = u + d;        // Reset u after spike
         end else begin
-            v_next = {8'b0, v} + (((16'd2 * {8'b0, v} * {8'b0, v}) >> 7) + (16'd5 * {8'b0, v}) - u + current_extended);
-            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7);
+            v_next = {8'b0, v} + (((16'd2 * {8'b0, v} * {8'b0, v}) >> 7) + (16'd5 * {8'b0, v}) - u + {8'b0, current})[15:0];
+            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7); 
         end
     end
     
     // Check for spike and assign 0 or 1
-    assign spike = (v >= threshold) ? 1'b1 : 1'b0;
+    assign spike = ({8'b0, v} >= threshold) ? 1'b1 : 1'b0;
 
 endmodule
