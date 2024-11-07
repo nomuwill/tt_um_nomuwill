@@ -25,7 +25,7 @@ module tt_um_nomuwill (
 
   // Instantiate the LIF module
   izh izh_1(
-    .current(ui_in),  // current input from parent module
+    .current({8'b0, ui_in}),  // current input from parent module, concatenated to 16 bits
     .clk(clk),        // clock driven by clock in parent module
     .reset_n(rst_n),  // reset driven by reset in parent module
     .state(uo_out),   // state output to parent module
