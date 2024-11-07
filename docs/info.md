@@ -9,13 +9,11 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-The model takes input current, and outputs a spike upon membrane potential crossing the threshold. 
-  The state of the membrane potential is ouput as well. See diagram for more details.
-
+TODO
 ## How to test
 
-Explain how to use your project
+TODO
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+None
