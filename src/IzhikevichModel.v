@@ -24,7 +24,7 @@ Izhikevich model
             - Ex: 16'b000000000_0011000 = 24/2^7 = 0.1875
             - Shift of >>7 is equivalent to dividing by 2^7
 
-    References:
+    References:`
     https://www.izhikevich.org/publications/spikes.pdf
 
 */
@@ -33,7 +33,7 @@ Izhikevich model
 
 `default_nettype none
 
-mmodule izhikevich_neuron (
+module izh (
 
     // Inputs
     input wire [15:0] current,    // Input current (16-bit)

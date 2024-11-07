@@ -9,7 +9,8 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+The model takes input current, and outputs a spike upon membrane potential crossing the threshold. 
+  The state of the membrane potential is ouput as well. See diagram for more details.
 
 ## How to test
 
