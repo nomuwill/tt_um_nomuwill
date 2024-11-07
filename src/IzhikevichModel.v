@@ -84,7 +84,8 @@ module izh (
             v_next = c;            // Spike condition
             u_next = u + d;        // Reset u after spike
         end else begin
-            v_next = {8'b0, v} + (((16'd2 * {8'b0, v} * {8'b0, v}) >> 7) + (16'd5 * {8'b0, v}) - u + {8'b0, current})[15:0];
+            v_next = (({8'b0, v} * {8'b0, v} * 16'd2) >> 7) + (({8'b0, v} * 16'd5) >> 7) - u + {8'b0, current};
+            v_next = v_next[15:0];
             u_next = u + ((a * (b * {8'b0, v} - u)) >> 7); 
         end
     end
