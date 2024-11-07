@@ -42,7 +42,7 @@ module izh (
 
     // Outputs
     output wire spike,         // Spike output (1-bit)
-    output reg [15:0] v       // State output
+    output wire [15:0] v       // State output
 );
 
     // Internal Components     
