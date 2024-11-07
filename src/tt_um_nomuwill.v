@@ -24,13 +24,11 @@ module tt_um_nomuwill (
   wire _unused = &{ena, uio_in, 1'b0};
 
   // Internal signal
-  /* verilator lint_off UNUSEDSIGNAL */
-  wire [15:0] v;  // Still declaring as 16 bits
-  /* verilator lint_on UNUSEDSIGNAL */
+  wire [7:0] v;  // Still declaring as 16 bits
 
   // Instantiate the LIF module
   izh izh_1(
-    .current({8'b0, ui_in}),  // current input from parent module, concatenated to 16 bits
+    .current(ui_in),  // current input from parent module, concatenated to 16 bits
     .clk(clk),        // clock driven by clock in parent module
     .reset_n(rst_n),  // reset driven by reset in parent module
     .spike(uio_out[7]),    // most significant bit of state output to parent module
