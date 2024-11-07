@@ -24,7 +24,7 @@ module tt_um_nomuwill (
   wire _unused = &{ena, uio_in, 1'b0};
 
   // Internal signal
-  wire [7:0] v;  // State output
+  wire [15:0] v;  // State output
 
   // Instantiate the LIF module
   izh izh_1(
