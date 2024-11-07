@@ -53,7 +53,7 @@ module izh (
     reg [15:0] threshold = 16'b000000111_1010000;  // 30 (16-bit)
 
     reg [15:0] u;
-    reg [15:0] u_next, v_next;
+    reg [7:0] u_next, v_next;
 
 
     /* 
@@ -80,7 +80,7 @@ module izh (
         (Calculate values and spike detection)
     */
     always @(*) begin
-        if (v >= threshold) begin
+        if ({8'b0, v} >= threshold) begin
             v_next = c;            // Spike condition
             u_next = u + d;        // Reset u after spike
         end else begin
@@ -90,6 +90,6 @@ module izh (
     end
     
     // Check for spike and assign 0 or 1
-    assign spike = (v >= threshold) ? 1'b1 : 1'b0;
+    assign spike = ({8'b0, v} >= threshold) ? 1'b1 : 1'b0;
 
 endmodule
