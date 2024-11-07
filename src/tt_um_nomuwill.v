@@ -24,7 +24,9 @@ module tt_um_nomuwill (
   wire _unused = &{ena, uio_in, 1'b0};
 
   // Internal signal
-  wire [15:0] v;  // State output
+  /* verilator lint_off UNUSEDSIGNAL */
+  wire [15:0] v;  // Still declaring as 16 bits
+  /* verilator lint_on UNUSEDSIGNAL */
 
   // Instantiate the LIF module
   izh izh_1(
