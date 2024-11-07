@@ -80,9 +80,15 @@ module izh (
     Combinational logic 
         (Calculate values and spike detection)
     */
-    // Assign next state values from current state
-    assign v_next = (v >= threshold) ? c : v + (((16'd2 * v * v) >> 7) + (16'd5 * v) - u + current);
-    assign u_next = (v >= threshold) ? u + d : u + ((a * (b * v - u)) >> 7);
+    always @(*) begin
+        if (v >= threshold) begin
+            v_next = c;            // Spike condition
+            u_next = u + d;        // Reset u after spike
+        end else begin
+            v_next = v + (((16'd2 * v * v) >> 7) + (16'd5 * v) - u + current);
+            u_next = u + ((a * (b * v - u)) >> 7);
+        end
+    end
     
     // Check for spike and assign 0 or 1
     assign spike = (v >= threshold) ? 1'b1 : 1'b0;
