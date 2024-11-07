@@ -28,9 +28,8 @@ module tt_um_nomuwill (
     .current({8'b0, ui_in}),  // current input from parent module, concatenated to 16 bits
     .clk(clk),        // clock driven by clock in parent module
     .reset_n(rst_n),  // reset driven by reset in parent module
-    .state(uo_out),   // state output to parent module
     .spike(uio_out[7])    // most significant bit of state output to parent module
-                            // this means rest are not used and must be assigned to 0
+    .v({8'b0, uo_out}),   // Use lower 8 bits of v for state output
   );
 
 endmodule
