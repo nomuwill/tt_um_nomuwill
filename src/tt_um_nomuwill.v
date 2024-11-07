@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_lif_top_nomuwill (
+module tt_um_nomuwill (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
