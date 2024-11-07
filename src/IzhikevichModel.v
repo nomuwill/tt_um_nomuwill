@@ -46,14 +46,14 @@ module izh (
 );
 
     // Internal Components     
-    reg [7:0] a = 8'b00011000;   // 24/2^7 = 0.1875
-    reg [7:0] b = 8'b00001000;   // 8/2^7 = 0.0625
-    reg [7:0] c = 8'b00111100;   // 30/2^7 = 0.234375
-    reg [7:0] d = 8'b00000100;   // 1/2^7 = 0.0078125
-    reg [7:0] threshold = 8'b11101000;  // 30 
+    reg [15:0] a = 16'b000000000_0011000;   // 24/2^7 = 0.1875 (16-bit)
+    reg [15:0] b = 16'b000000000_0001000;   // 8/2^7 = 0.0625 (16-bit)
+    reg [15:0] c = 16'b000000000_0011110;   // 30/2^7 = 0.234375 (16-bit)
+    reg [15:0] d = 16'b000000000_0000100;   // 1/2^7 = 0.0078125 (16-bit)
+    reg [15:0] threshold = 16'b000000111_1010000;  // 30 (16-bit)
 
-    reg [7:0] u;
-    reg [7:0] u_next, v_next;
+    reg [15:0] u;
+    reg [15:0] u_next, v_next;
 
 
     /* 
@@ -65,11 +65,11 @@ module izh (
         // If reset cycle, reset state
         if (!reset_n) begin
             v <= 8'b00000000;
-            u <= 8'b00000000;
+            u <= 16'b000000000_0000000;
 
         // If not a reset cycle, update state
         end else begin
-            v <= v_next;
+            v <= v_next[7:0];
             u <= u_next;   
         end
     end
