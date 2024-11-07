@@ -17,11 +17,14 @@ module tt_um_nomuwill (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign uio_out [6:0] = 0;
-  assign uio_oe  = 8'b10000000;;
+  assign uio_out [6:0] = 7'b0;
+  assign uio_oe  = 8'b10000000;
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, uio_in, 1'b0};
+
+  // Internal signal
+  wire [15:0] v;  // State output
 
   // Instantiate the LIF module
   izh izh_1(
