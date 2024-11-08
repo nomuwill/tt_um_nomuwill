@@ -5,7 +5,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = tt_um_nomwuill.v IzhikevichModel.v
+PROJECT_SOURCES = tt_um_nomuwill.v izh.v
 
 
 ifneq ($(GATES),yes)

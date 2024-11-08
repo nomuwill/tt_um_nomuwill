@@ -1,19 +1,52 @@
 <!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
+You can also include images in this folder and reference them in the markdown. 
+Each image must be less than 512 kb in size, and the combined size of all images 
+must be less than 1 MB.-->
 
 ## How it works
 
-TODO
+    Izhikevich model 
+
+    The Izhikevich model is a simple spiking neuron model that builds on the 
+        dynamics of the simplistic leaky integrate-and-fire model, adding 
+        complexity of the Hodgkin-Huxley model with minimal computational 
+        cost.
+
+        The model is described by the following system:
+
+            v' = 0.04*v^2 + 5*v + 140 - u + I
+            u' = a*(b*v - u)
+            if v >= 30 then {v = c; u = u + d}
+
+            where: 
+                a, b, c, d = dimensionless constants
+                v = membrane potential
+                u = membrane recovery (Na and K, neg feedback to v)
+                a = time scale of the recovery variable u (small = slow recovery)
+                b = sensitivity of the recovery variable u to  v
+                c = after spike reset value of v
+                d = after spike reset value of u
+                I = input current
+
+        The constants for the model differential equation v' are experimentally
+            determined by fitting the model to the desired neuron behavior. In 
+            the original paper (from which the equations are taken), the model 
+            was fit to experimental data from Regular Spiking of a rat cortical 
+            neuron.
+
+    The model uses a mix of fixed point arithmetic to both handle 8 bit input
+        and perform 16 bit calculations. 
+            - 16-bit signed fixed point
+                - Ex: 16'b000000000_0011000 = 24/2^7 = 0.1875
+                - Shift of >>7 is equivalent to dividing by 2^7
+
+    References:`
+    https://www.izhikevich.org/publications/spikes.pdf
+
 ## How to test
 
 TODO
 
 ## External hardware
 
-None
+N/A at the moment

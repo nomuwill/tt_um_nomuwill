@@ -17,8 +17,8 @@ module tt_um_nomuwill (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign uio_out [6:0] = 7'b0;
-  assign uio_oe  = 8'b10000000;
+  assign uio_out [6:0] = 0;
+  assign uio_oe  = 1;
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, uio_in, 1'b0};
@@ -35,6 +35,6 @@ module tt_um_nomuwill (
     .v(v)   // Use lower 8 bits of v for state output
   );
 
-  assign uo_out = v;  // Assign lower 8 bits of v to output
+  assign uo_out = v[7];  // Assign lower 8 bits of v to output
 
 endmodule
