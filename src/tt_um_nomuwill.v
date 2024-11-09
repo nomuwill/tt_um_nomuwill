@@ -18,13 +18,13 @@ module tt_um_nomuwill (
 
   // All output pins must be assigned. If not used, assign to 0.
   assign uio_out [6:0] = 0;
-  assign uio_oe  = 1;
+  assign uio_oe = 0;
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, uio_in, 1'b0};
+  wire _unused = &{ena, 1'b0, uio_in};
 
   // Internal signal
-  wire [7:0] v;  // Still declaring as 16 bits
+  wire [7:0] v; 
   wire spike;
 
   // Instantiate the LIF module

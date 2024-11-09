@@ -12,59 +12,51 @@ module izh (
     output reg [7:0] v       // State output
 );
 
-    // Internal Components     (NEED TO FIX)
-    reg [15:0] a = 16'b000000000_0011000;   // 24/2^7 = 0.1875 (16-bit)
-    reg [15:0] b = 16'b000000000_1100100;   // 100/2^7 = 0.78125 (16-bit)
-    reg [15:0] c = 16'b001000000_0000000;    // -.0078 V
-    reg [15:0] d = 16'b000001000_0000000;    // -.00078 V
-    reg [15:0] threshold = 16'b000000001_1010000;  // 30 (16-bit)
+    // Scaling factor (2^7 = 128)
+    parameter SCALE = 128;
 
-    reg [15:0] u = 16'b0;
+    // Internal Constants (scaled values for fixed-point arithmetic)
+    reg [15:0] a = 16'b000000000_0000010;  // 0.02 scaled by 128 = 2.56 -> 16'b000000000_0000010
+    reg [15:0] b = 16'b000000000_0011101;  // 0.1 scaled by 128 = 12.8 -> 16'b000000000_0011101
+    reg [15:0] c = 16'b000000000_0001101;  // 0.0125 scaled by 128 = 1.6 -> 16'b000000000_0001101
+    reg [15:0] d = 16'b000000000_0000010;  // 0.02 scaled by 128 = 2.56 -> 16'b000000000_0000010
+
+    reg [15:0] u = 16'b0;                  // Recovery variable
     reg [15:0] u_next = 16'b0, v_next = 16'b0;
 
-
-    /* 
-    Sequential logic 
-          (update state at each clock cycle)
-    */
+    // Sequential logic: Update state at each clock cycle
     always @(posedge clk) begin
-
-        // If reset cycle, reset state
         if (!reset_n) begin
-            v <= 8'b0;
-            u <= 16'b0;
-
-        // If not a reset cycle, update state
+            v <= 8'b0;       // Reset voltage
+            u <= 16'b0;       // Reset recovery variable
         end else begin
-            v <= v_next[7:0];
-            u <= u_next;   
+            v <= v_next[7:0];  // Update voltage state
+            u <= u_next;        // Update recovery state
         end
     end
 
-
-    /*
-    Combinational logic 
-        (Calculate values and spike detection)
-    */
+    // Combinational logic: Calculate values and detect spike
     always @(*) begin
-
-        // Initialize next state
-        v_next = {8'b0, v};
+        // Initialize next state values
+        v_next = {8'b0, v}; // Keep lower 8 bits for voltage
         u_next = u;
 
-        if ({8'b0, v} >= threshold) begin
-            v_next = c;       
-            u_next = u + d; 
-
+        // Check for spike condition (voltage exceeding threshold)
+        if ({8'b0, v} >= 16'b000000001_1010000) begin  // Threshold (30 scaled by 128)
+            v_next = c;          // Reset voltage to constant c when spike occurs
+            u_next = u + d;      // Update recovery variable
         end else begin
+            // Update voltage: v_next = v^2 * 2 / 128 + v * 5 / 128 - u + current
             v_next = (({8'b0, v} * {8'b0, v} * 16'd2) >> 7) + 
-                        (({8'b0, v} * 16'd5) >> 7) - u + {8'b0, current};
-            v_next = v_next[15:0];
-            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7); 
+                     (({8'b0, v} * 16'd5) >> 7) - u + {8'b0, current};
+
+            // Update recovery variable: u_next = u + a * (b * v - u) / 128
+            v_next = v_next[15:0]; // Keep the lower 16 bits of voltage
+            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7);
         end
     end
     
-    // Check for spike and assign 0 or 1
-    assign spike = ({8'b0, v} >= threshold) ? 1'b1 : 1'b0;
+    // Check for spike and assign output
+    assign spike = ({8'b0, v} >= 16'b000000001_1010000) ? 1'b1 : 1'b0;
 
 endmodule

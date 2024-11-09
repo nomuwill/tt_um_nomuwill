@@ -1,55 +1,54 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
 
+# Neuron parameters (scaled for fixed-point representation)
 a = 0.02
-b = 0.2 
-c = -65  
-d = 8   
+b = 0.2
+c = -65
+d = 8
+threshold = 30  # Spike threshold
 
-def izhikevich_model(v, u, I, a=a, b=b, c=c, d=d, dt=0.1):
-    if v >= 30:
-        v = c
-        u += d
-        spike = 1
-    else:
-        v += dt * (0.04 * v**2 + 5 * v + 140 - u + I)
-        u += dt * a * (b * v - u)
-        spike = 0
-    return v, u, spike
+# Initialize states for 16-bit and 8-bit precision
+v_16, u_16 = -65, b * -65  # Initial values for v and u in 16-bit
+v_8, u_8 = -65, b * -65    # Initial values for v and u in 8-bit
 
-v = -65    # membrane potential
-u = b * v  # recovery variable
-I = 0      # current input
-time = np.linspace(0, 100, 10000)
-v_trace = [] 
+# Simulation parameters
+time_steps = 100
+current_input = 10  # Constant current input
 
-fig, ax = plt.subplots(figsize=(10, 6))
-plt.subplots_adjust(bottom=0.25)
-ax.set_xlabel("Time (ms)")
-ax.set_ylabel("Membrane Potential (mV)")
-line, = ax.plot([], [], lw=2)
-ax_slider = plt.axes([0.25, 0.01, 0.65, 0.03], facecolor='lightgoldenrodyellow')
-slider = Slider(ax_slider, 'Current Input (I)', 3, 4, valinit=0, valstep=0.001)
-ax.set_ylim(-80, 40)
+# Containers for storing neuron states
+v_16_states = []
+v_8_states = []
+diff_states = []
 
-
-def update(val):
-    global v, u, I, v_trace
-    I = slider.val
-    v_trace.clear() 
-    for t in time:
-        v, u, _ = izhikevich_model(v, u, I)
-        v_trace.append(v)
+# Simulation loop
+for _ in range(time_steps):
+    # 16-bit precision calculations (simulated with floats)
+    v_16 += 0.5 * (0.04 * v_16 * v_16 + 5 * v_16 + 140 - u_16 + current_input)
+    u_16 += a * (b * v_16 - u_16)
     
-    # Update the plot data
-    line.set_xdata(time)
-    line.set_ydata(v_trace)
+    # 8-bit precision calculations (simulated by limiting decimal places)
+    v_8 += round(0.5 * (0.04 * v_8 * v_8 + 5 * v_8 + 140 - u_8 + current_input), 2)
+    u_8 += round(a * (b * v_8 - u_8), 2)
+    
+    # Spike reset
+    if v_16 >= threshold:
+        v_16, u_16 = c, u_16 + d
+    if v_8 >= threshold:
+        v_8, u_8 = c, u_8 + d
 
-    ax.relim()
-    ax.autoscale_view()
-    plt.draw()
+    # Store results
+    v_16_states.append(v_16)
+    v_8_states.append(v_8)
+    diff_states.append(abs(v_16 - v_8))
 
-update(0)
-slider.on_changed(update)
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.plot(v_16_states, label="16-bit Precision", color='blue')
+plt.plot(v_8_states, label="8-bit Precision", color='orange', linestyle='--')
+plt.plot(diff_states, label="Difference", color='red', linestyle=':')
+plt.xlabel("Time Step")
+plt.ylabel("Membrane Potential (v)")
+plt.legend()
+plt.title("Comparison of 16-bit and 8-bit Precision in Izhikevich Neuron Model")
 plt.show()

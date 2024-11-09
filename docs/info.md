@@ -20,12 +20,21 @@ must be less than 1 MB.-->
 
             where: 
                 a, b, c, d = dimensionless constants
+
+                    Regular Spiking (RS) Excitatory Neuron:
+                        a = 0.02, b = 0.2, c = -65, d = 8
+    
+                    
                 v = membrane potential
                 u = membrane recovery (Na and K, neg feedback to v)
                 a = time scale of the recovery variable u (small = slow recovery)
-                b = sensitivity of the recovery variable u to  v
+                b = sensitivity of the recovery variable u to v
+                        Larger values increase sensitivity and lead to more 
+                        spiking behavior. b<a(b>a) is saddle-node
                 c = after spike reset value of v
+                        caused by fast K+ channels
                 d = after spike reset value of u
+                        caused by slow Na+ & K+ channels
                 I = input current
 
         The constants for the model differential equation v' are experimentally
