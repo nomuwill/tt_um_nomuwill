@@ -20,7 +20,7 @@ async def test_project(dut):
     dut.rst_n.value = 1     # Exit reset
     await ClockCycles(dut.clk, 10)
 
-    dut.ui_in.value = 20  # Assign a known value to `current`
+    dut.ui_in.value = 30  # Assign a known value to `current`
     await ClockCycles(dut.clk, 10)
 
 

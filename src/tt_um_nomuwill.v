@@ -25,16 +25,18 @@ module tt_um_nomuwill (
 
   // Internal signal
   wire [7:0] v;  // Still declaring as 16 bits
+  wire spike;
 
   // Instantiate the LIF module
   izh izh_1(
     .current(ui_in),  // current input from parent module, concatenated to 16 bits
     .clk(clk),        // clock driven by clock in parent module
     .reset_n(rst_n),  // reset driven by reset in parent module
-    .spike(uio_out[7]),    // most significant bit of state output to parent module
+    .spike(spike),    // most significant bit of state output to parent module
     .v(v)   // Use lower 8 bits of v for state output
   );
 
-  assign uo_out = v[7];  // Assign lower 8 bits of v to output
+  assign uo_out = v; 
+  assign uio_out[7] = spike;
 
 endmodule
