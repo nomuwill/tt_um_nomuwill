@@ -28,8 +28,6 @@ module izh (
         if (!reset_n) begin
             v <= 8'b0;       // Reset voltage
             u <= 16'b0;      // Reset recovery variable
-            v_next <= 16'b0; // Reset next voltage
-            u_next <= 16'b0; // Reset next recovery variable
 
         // Otherwise, update the state
         end else begin
