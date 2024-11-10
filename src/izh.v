@@ -17,8 +17,9 @@ module izh (
     reg [15:0] thr = 16'b000000001_1100000;  // 30 * 128 = 3840
 
     // Internal Variables
-    reg [15:0] u = 16'b0;                  // Recovery variable
-    reg [15:0] u_next = 16'b0, v_next = 16'b0;
+    reg [15:0] u = 16'b0;                
+    reg [15:0] u_next = 16'b0;
+    reg [15:0] v_next = 16'b0;
 
     // Sequential logic (on clock)
     always @(posedge clk) begin
@@ -55,7 +56,7 @@ module izh (
                      (({8'b0, v} * 16'd5) >> 7) - u + ({8'b0, current} << 4);
             
             // Update recovery variable (decay of u)
-            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7); // Apply proper scaling
+            u_next = u + ((a * (b * {8'b0, v} - u)) >> 7);
         end
     end
     
