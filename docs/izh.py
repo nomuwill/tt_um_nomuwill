@@ -1,54 +1,86 @@
+'''
+Noah Williams
+11/9/2024
+
+Simulation for the Izhikevich Neuron Model
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+import matplotlib.colors as mcolors
 
-# Neuron parameters (scaled for fixed-point representation)
-a = 0.02
-b = 0.2
-c = -65
-d = 8
-threshold = 30  # Spike threshold
+class IzhikevichNeuron:
 
-# Initialize states for 16-bit and 8-bit precision
-v_16, u_16 = -65, b * -65  # Initial values for v and u in 16-bit
-v_8, u_8 = -65, b * -65    # Initial values for v and u in 8-bit
+    def __init__(self, thr):
+        self.a = 0.02    # Time constant for u (recovery variable)
+        self.b = 0.2    # Sensitivity of recovery variable to voltage
+        self.c = -65    # Reset value for voltage when a spike occurs
+        self.d = 8    # Reset value for recovery variable when a spike occurs
+        self.thr = thr  # Spike threshold
 
-# Simulation parameters
-time_steps = 100
-current_input = 10  # Constant current input
+        # Initial conditions
+        self.v = -65   # Initial voltage (in mV)
+        self.u = 0     # Initial recovery variable
 
-# Containers for storing neuron states
-v_16_states = []
-v_8_states = []
-diff_states = []
+        # Misc
+        self.dt = .01    # Time step (ms) 
 
-# Simulation loop
-for _ in range(time_steps):
-    # 16-bit precision calculations (simulated with floats)
-    v_16 += 0.5 * (0.04 * v_16 * v_16 + 5 * v_16 + 140 - u_16 + current_input)
-    u_16 += a * (b * v_16 - u_16)
-    
-    # 8-bit precision calculations (simulated by limiting decimal places)
-    v_8 += round(0.5 * (0.04 * v_8 * v_8 + 5 * v_8 + 140 - u_8 + current_input), 2)
-    u_8 += round(a * (b * v_8 - u_8), 2)
-    
-    # Spike reset
-    if v_16 >= threshold:
-        v_16, u_16 = c, u_16 + d
-    if v_8 >= threshold:
-        v_8, u_8 = c, u_8 + d
+    def step(self, current):
+        v_prime = (0.04 * self.v**2) + (5 * self.v) + 140 - self.u + current
+        u_prime = self.a * (self.b * self.v - self.u)
+        v_next = self.v + v_prime * self.dt
+        u_next = self.u + u_prime * self.dt
 
-    # Store results
-    v_16_states.append(v_16)
-    v_8_states.append(v_8)
-    diff_states.append(abs(v_16 - v_8))
+        spike = 0
+        if self.v >= self.thr:  
+            self.v = self.c 
+            self.u = self.u + self.d 
+            spike = 1
+        else:
+            self.v = v_next
+            self.u = u_next
+        
+        return spike
 
-# Plotting
-plt.figure(figsize=(10, 6))
-plt.plot(v_16_states, label="16-bit Precision", color='blue')
-plt.plot(v_8_states, label="8-bit Precision", color='orange', linestyle='--')
-plt.plot(diff_states, label="Difference", color='red', linestyle=':')
-plt.xlabel("Time Step")
-plt.ylabel("Membrane Potential (v)")
-plt.legend()
-plt.title("Comparison of 16-bit and 8-bit Precision in Izhikevich Neuron Model")
-plt.show()
+
+if __name__ == "__main__":
+
+    # Parameters
+    n_steps = 10000  # Number of time steps to simulate
+    currents = [4, 6, 8]  # List of input currents (scaled values)
+    colors = ['grey', 'silver', 'black']
+    threshold = 30  # Spike threshold
+
+    # Create neuron
+    neuron = IzhikevichNeuron(thr=threshold)
+
+    # Plot setup
+    fig, ax = plt.subplots(figsize=(10, 6))
+    plt.subplots_adjust(left=0.2, right=0.8, hspace=0.5)
+    ax.set_title("Voltage vs Time for Input Currents")
+    ax.set_xlabel("Time Step")
+    ax.set_ylabel("Voltage (mV)")
+
+    # Simulate for different currents
+    for i, current in enumerate(currents):
+        # Reset neuron state
+        neuron.v = -65
+        neuron.u = 0
+        
+        voltages = np.zeros(n_steps)
+
+        # Simulate for each current
+        for step in range(n_steps):
+            neuron.step(current)
+            voltages[step] = neuron.v
+
+        # Plot voltage for each current with corresponding color
+        ax.plot(voltages, label=f"Current = {current} μA", color=colors[i])
+
+    # Add threshold
+    ax.axhline(y=threshold, color='lightgrey', linestyle='--', label='Threshold')
+
+    # Show legend
+    plt.legend()
+    plt.show()

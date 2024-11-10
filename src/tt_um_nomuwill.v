@@ -16,7 +16,7 @@ module tt_um_nomuwill (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  // All output pins must be assigned. If not used, assign to 0.
+  // All output pins must be assigned. `If not used, assign to 0.
   assign uio_out [6:0] = 0;
   assign uio_oe = 0;
 

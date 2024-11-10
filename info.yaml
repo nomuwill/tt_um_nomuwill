@@ -1,9 +1,9 @@
 # Tiny Tapeout project information
 project:
-  title:        "Izhikevich Nueron Model"
+  title:        "16 Bit Izhikevich Neuron"
   author:       "Noah Williams"
   discord:      "noah_wyam"
-  description:  "Izhikevich nueron model with 16 bit fixed point arithmetic."
+  description:  "Izhikevich neuron model with 16 bit arithmetic."
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
 

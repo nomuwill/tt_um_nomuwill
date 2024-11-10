@@ -43,19 +43,22 @@ must be less than 1 MB.-->
             was fit to experimental data from Regular Spiking of a rat cortical 
             neuron.
 
-    The model uses a mix of fixed point arithmetic to both handle 8 bit input
-        and perform 16 bit calculations. 
-            - 16-bit signed fixed point
-                - Ex: 16'b000000000_0011000 = 24/2^7 = 0.1875
-                - Shift of >>7 is equivalent to dividing by 2^7
 
-    References:`
+    References:
     https://www.izhikevich.org/publications/spikes.pdf
 
 ## How to test
 
-TODO
+    To test the model, use the supplied test-bench. The test-bench will run through
+        three different scenarios. The first case is the reset test case, which 
+        ensure that the model resets properly given a reset condition (res_n = 1).
+        The next test case checks to make sure that the model doesn't spike when 
+        the input current is below threshold. The spike value for each of these
+        included non-spike test cases should be 0. The final test case is the spike 
+        test that ensures the model spikes when the input is above the threshold. This
+        includes a test for the maximum current to test overflow conditions. Each condition
+        is checked with an assert statement. 
 
 ## External hardware
 
-N/A at the moment
+N/A at the moment :) 
